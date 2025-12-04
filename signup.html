@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Swastik Metal</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="SM_logo.png" type="image/x-icon"> <style>
+        body { background-color: #1a1a1a; color: #fff; }
+        .register-box {
+            background-color: #242424;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            margin-top: 50px;
+            border: 1px solid #333;
+        }
+        .form-control {
+            background-color: #333;
+            border: 1px solid #444;
+            color: #fff;
+        }
+        .form-control:focus {
+            background-color: #444;
+            color: #fff;
+            border-color: #a8741a;
+            box-shadow: none;
+        }
+        .btn-register {
+            background-color: #a8741a;
+            color: #fff;
+            width: 100%;
+            padding: 12px;
+            font-weight: bold;
+            border: none;
+        }
+        .btn-register:hover { background-color: #8c5e12; color: #fff; }
+        .logo-area { text-align: center; margin-bottom: 30px; }
+        .logo-area h2 { font-family: 'Baloo 2', serif; color: #a8741a; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="register-box">
+                    <div class="logo-area">
+                        <h2>Swastik Metal</h2>
+                        <p class="text-muted">Trader Registration Form</p>
+                    </div>
+
+                    <form id="signupForm">
+                        <div class="mb-3">
+                            <label class="form-label">Company Name</label>
+                            <input type="text" class="form-control" id="companyName" required placeholder="Ex: Ramesh Traders">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Full Name (Owner)</label>
+                            <input type="text" class="form-control" id="fullName" required placeholder="Your Name">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email Address (Official)</label>
+                            <input type="email" class="form-control" id="email" required placeholder="name@company.com">
+                            <small class="text-muted" style="font-size: 11px;">* Verification link will be sent here.</small>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Mobile Number</label>
+                            <input type="tel" class="form-control" id="mobile" required placeholder="+91 98765xxxxx">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Full Address</label>
+                            <textarea class="form-control" id="address" rows="3" required></textarea>
+                        </div>
+                        
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-register">Submit Request</button>
+                        </div>
+                        
+                        <div class="mt-3 text-center">
+                            <small>Already have an account? <a href="login.html" style="color:#a8741a">Login Here</a></small>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <script type="module" src="signup.js"></script>
+
+</body>
+</html>

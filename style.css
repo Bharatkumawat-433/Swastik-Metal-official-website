@@ -1,0 +1,371 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700&display=swap");
+
+/* --- 1. GLOBAL STYLES --- */
+body {
+    background-color: #1a1a1a;
+    color: #e0e0e0;
+    font-family: "Poppins", sans-serif;
+    overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: "Baloo 2", cursive;
+    font-weight: 600;
+    color: #fff;
+}
+
+a { text-decoration: none !important; transition: 0.3s; color: inherit; }
+a:hover { color: #a8741a; }
+ul { list-style: none; padding: 0; margin: 0; }
+
+/* --- 2. HEADER AREA --- */
+.header_black { background: #242424; border-bottom: 1px solid #333; }
+.header_top { border-bottom: 1px solid #333; padding: 10px 0; }
+
+.contact_box p { margin: 0; color: #ccc; font-size: 14px; }
+.contact_box a { color: #a8741a; font-weight: bold; }
+
+.top_right ul { display: flex; justify-content: flex-end; }
+.top_right ul li { margin-left: 20px; position: relative; }
+.top_right a { font-size: 13px; color: #fff; cursor: pointer; }
+
+/* Dropdown Links */
+.dropdown_links {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: #333;
+    min-width: 150px;
+    z-index: 99;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.5);
+    display: none;
+    border-radius: 4px;
+}
+.top_links:hover .dropdown_links { display: block; }
+.dropdown_links li { margin: 0; display: block; border-bottom: 1px solid #444; }
+.dropdown_links li a { display: block; padding: 10px; color: #ccc; }
+.dropdown_links li a:hover { background: #a8741a; color: #fff; }
+
+/* Logo & Navbar */
+.header_middel { padding: 20px 0; border-bottom: 1px solid #333; }
+.sticky-header { background: #242424; position: sticky; top: 0; z-index: 999; border-bottom: 1px solid #333; }
+
+.navbar-nav .nav-link { color: #fff !important; font-size: 16px; padding: 10px 15px !important; text-transform: uppercase; }
+.navbar-nav .nav-link:hover { color: #a8741a !important; }
+
+/* --- 3. SLIDER SECTION --- */
+.slider_area { margin-bottom: 50px; }
+.slider_content h1 { font-size: 48px; margin-bottom: 10px; }
+.slider_content p { font-size: 18px; color: #a8741a; margin-bottom: 25px; }
+.button { 
+    background: #a8741a; color: #fff; padding: 10px 25px; 
+    border-radius: 5px; font-weight: 600; text-transform: uppercase; 
+}
+.button:hover { background: #fff; color: #a8741a; }
+
+/* --- 4. PRODUCT CARDS (IMPORTANT FIX) --- */
+.product_section { padding: 50px 0; }
+.section_title h2 { font-size: 32px; color: #fff; margin-bottom: 10px; }
+
+/* Card Design */
+.single_product {
+    background: #242424;
+    border: 1px solid #333;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.3s ease-in-out;
+    margin-bottom: 30px;
+    position: relative;
+    cursor: pointer;
+}
+
+.single_product:hover {
+    transform: translateY(-5px);
+    border-color: #a8741a;
+    box-shadow: 0 5px 15px rgba(168, 116, 26, 0.2);
+}
+
+/* Image Container (Fixed Aspect Ratio) */
+.product_thumb {
+    position: relative;
+    width: 100%;
+    padding-top: 75%; /* 4:3 Aspect Ratio */
+    background: #000;
+    overflow: hidden;
+}
+
+.product_thumb img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: 0.4s;
+}
+
+.single_product:hover .product_thumb img { transform: scale(1.1); }
+
+/* Product Details */
+.product_content { padding: 15px; text-align: center; }
+.product_content h3 { font-size: 18px; margin-bottom: 5px; color: #fff; font-weight: 500; }
+.product_content h2 { color: #a8741a; font-size: 22px; font-weight: 700; margin-bottom: 5px; }
+.product_content span { font-size: 13px; color: #888; display: block; }
+
+/* Loading Spinner */
+.loading-spinner { font-size: 24px; color: #a8741a; margin: 50px 0; }
+
+/* --- 5. MODAL (POPUP) STYLES --- */
+.modal-content {
+    background-color: #1f1f1f;
+    border: 1px solid #444;
+    color: #fff;
+    box-shadow: 0 0 25px rgba(0,0,0,0.8);
+}
+.modal-header { border-bottom: 1px solid #333; }
+.btn-close-white { filter: invert(1); }
+
+.chart-container {
+    background: #2a2a2a;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #333;
+}
+
+/* Traders Table in Modal */
+.table-dark { background-color: #242424; color: #ddd; }
+.table-dark th { color: #888; border-bottom: 1px solid #444; font-weight: 500; font-size: 13px; }
+.table-dark td { border-bottom: 1px solid #333; vertical-align: middle; font-size: 14px; }
+.table-dark tr:hover { background-color: #2a2a2a; }
+
+/* WhatsApp Button */
+.btn-whatsapp {
+    background-color: #25D366;
+    color: #fff !important;
+    border-radius: 20px;
+    padding: 5px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+.btn-whatsapp:hover { background-color: #128C7E; transform: scale(1.05); }
+
+/* --- 6. FOOTER --- */
+.footer_black { background: #111; padding: 40px 0 20px; border-top: 1px solid #333; margin-top: 50px; }
+.footer_black p { color: #777; font-size: 14px; text-align: center; }
+.footer_black a { color: #a8741a; }
+
+
+
+/* --- DEALER CARD PROFESSIONAL DESIGN --- */
+.dealer-card {
+    background: #242424;
+    border: 1px solid #333;
+    border-radius: 10px;
+    padding: 15px;
+    display: flex; /* Image Left, Text Right */
+    align-items: center;
+    gap: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.dealer-card:hover {
+    transform: translateY(-5px);
+    border-color: #a8741a;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    background: #2a2a2a;
+}
+
+/* Left Side Image */
+.dealer-img-box {
+    flex-shrink: 0; /* Image shrink na ho */
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid #a8741a;
+}
+
+.dealer-img-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Right Side Content */
+.dealer-info {
+    flex-grow: 1;
+    overflow: hidden; /* Text overflow handle karne ke liye */
+}
+
+.dealer-company {
+    color: #fff;
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.verified-tick {
+    color: #1DA1F2; /* Twitter Blue for Verified */
+    font-size: 14px;
+}
+
+.dealer-user {
+    color: #ccc;
+    font-size: 13px;
+    margin-bottom: 4px;
+}
+
+.dealer-loc {
+    color: #888;
+    font-size: 11px;
+    display: block;
+}
+
+/* --- DEALER DETAIL MODAL --- */
+.dealer-modal-header {
+    background: #1f1f1f;
+    border-bottom: 1px solid #333;
+    text-align: center;
+    padding: 30px 20px;
+    position: relative;
+}
+
+.big-profile-img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 4px solid #a8741a;
+    object-fit: cover;
+    margin-bottom: 15px;
+    background: #000;
+}
+
+.info-row {
+    display: flex;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #333;
+    padding-bottom: 10px;
+}
+.info-label {
+    width: 100px;
+    color: #888;
+    font-size: 13px;
+    font-weight: 500;
+}
+.info-value {
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+
+/* --- PROFESSIONAL CONTACT SECTION --- */
+.contact_section {
+    background: #1a1a1a;
+    padding: 80px 0;
+    position: relative;
+    border-top: 1px solid #333;
+}
+
+/* Contact Cards */
+.contact-card {
+    background: #242424;
+    padding: 30px;
+    border-radius: 10px;
+    border: 1px solid #333;
+    text-align: center;
+    transition: all 0.3s ease;
+    height: 100%;
+}
+.contact-card:hover {
+    transform: translateY(-10px);
+    border-color: #a8741a;
+    box-shadow: 0 10px 30px rgba(168, 116, 26, 0.15);
+}
+.contact-icon {
+    width: 60px;
+    height: 60px;
+    background: #333;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    color: #a8741a;
+    font-size: 24px;
+    transition: 0.3s;
+}
+.contact-card:hover .contact-icon {
+    background: #a8741a;
+    color: #fff;
+}
+.contact-title {
+    color: #fff;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    font-family: 'Baloo 2', serif;
+}
+.contact-info {
+    color: #888;
+    font-size: 14px;
+    line-height: 1.6;
+}
+.contact-info a { color: #888; }
+.contact-info a:hover { color: #a8741a; }
+
+/* Inquiry Form */
+.inquiry-box {
+    background: #242424;
+    padding: 40px;
+    border-radius: 10px;
+    border: 1px solid #333;
+    margin-top: 50px;
+}
+.form-header h3 { color: #a8741a; font-size: 24px; }
+.form-control-pro {
+    background: #1f1f1f;
+    border: 1px solid #444;
+    color: #fff;
+    height: 50px;
+    border-radius: 5px;
+    padding: 0 20px;
+    width: 100%;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+.form-control-pro:focus {
+    border-color: #a8741a;
+    outline: none;
+    background: #1f1f1f;
+}
+.textarea-pro { height: 120px; padding-top: 15px; }
+
+.btn-submit-pro {
+    background: #a8741a;
+    color: #fff;
+    border: none;
+    padding: 12px 40px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 5px;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: 0.3s;
+    width: 100%;
+}
+.btn-submit-pro:hover { background: #fff; color: #a8741a; }

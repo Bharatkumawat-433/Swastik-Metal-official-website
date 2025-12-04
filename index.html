@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swastik Metal - Live Trading Hub</title>
+    <link rel="shortcut icon" href="SM_logo.png" type="image/x-icon">
+    
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        /* --- FIXED DROPDOWN CSS (IMPORTANT) --- */
+        .top_right { position: relative; z-index: 1000; }
+        .top_right ul { list-style: none; padding: 0; margin: 0; display: flex; justify-content: flex-end; }
+        .top_right li { position: relative; margin-left: 20px; }
+        
+        .top_links { display: inline-block; padding: 10px 0; cursor: pointer; }
+        .top_links a { color: #fff; text-decoration: none; font-size: 13px; font-weight: 500; transition: 0.3s; }
+        .top_links a:hover { color: #a8741a; }
+
+        /* Dropdown Menu Box */
+        .dropdown_links {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: #242424; /* Dark BG */
+            min-width: 180px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5); /* Shadow */
+            border: 1px solid #444;
+            border-top: 3px solid #a8741a; /* Orange Top Border */
+            border-radius: 0 0 5px 5px;
+            z-index: 99999 !important; /* Slider ke upar dikhega */
+            
+            /* Hidden State */
+            visibility: hidden;
+            opacity: 0;
+            transform: translateY(15px);
+            transition: all 0.3s ease;
+            
+            padding: 5px 0;
+            text-align: left;
+        }
+
+        /* Show on Hover */
+        .top_links:hover .dropdown_links {
+            visibility: visible;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Dropdown Items */
+        .dropdown_links li { margin: 0; display: block; width: 100%; }
+        .dropdown_links li a {
+            display: block;
+            padding: 10px 15px;
+            color: #ccc;
+            font-size: 13px;
+            border-bottom: 1px solid #333;
+        }
+        .dropdown_links li a:hover {
+            background-color: #333;
+            color: #a8741a;
+            padding-left: 20px; /* Slide Effect */
+        }
+        .dropdown_links li:last-child a { border-bottom: none; }
+
+        /* Other Styles */
+        .loading-spinner { font-size: 2rem; color: #a8741a; }
+        .modal-content { background-color: #242424; color: #fff; border: 1px solid #444; }
+        .modal-header { border-bottom: 1px solid #333; }
+        .btn-close-white { filter: invert(1); }
+        .btn-whatsapp-sm { background-color: #25D366; color: white !important; border-radius: 20px; font-size: 12px; padding: 4px 10px; display: inline-flex; align-items: center; gap: 5px; text-decoration: none; }
+    </style>
+</head>
+
+<body>
+    <div class="home_black_version">
+        
+        <header class="header_area header_black">
+            <div class="header_top">
+                <div class="container">
+                    <div class="row align-items-center">
+                        <div class="col-6">
+                            <div class="contact_box">
+                                <p><i class="ion-ios-telephone" style="color:#a8741a; margin-right:5px;"></i> <a href="tel:9982593535" style="color:#fff;">9982593535</a></p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-6 text-right">
+                            <div class="top_right">
+                                <ul>
+                                    <li class="top_links">
+                                        <a href="#">My Account <i class="fa fa-angle-down" style="margin-left:5px;"></i></a>
+                                        <ul class="dropdown_links">
+                                            <li><a href="login.html"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+                                            <li><a href="signup.html"><i class="fas fa-user-plus"></i> Register</a></li>
+                                            <li><a href="admin-dashboard.html"><i class="fas fa-user-shield"></i> Admin Panel</a></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="header_bottom sticky-header">
+                <div class="container">
+                    <nav class="navbar navbar-expand-lg navbar-dark p-0">
+                        <a class="navbar-brand d-block d-lg-none" href="#" style="font-family:'Baloo 2'; color:#fff;">Swastik Metal</a>
+                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mainNav"><span class="navbar-toggler-icon"></span></button>
+                        <div class="collapse navbar-collapse" id="mainNav">
+                            <ul class="navbar-nav mx-auto">
+                                <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                                <li class="nav-item"><a class="nav-link" href="#liveMetalsSection">Live Rates</a></li>
+                                <li class="nav-item"><a class="nav-link" href="#dealersSection">Dealers</a></li>
+                                <li class="nav-item"><a class="nav-link" href="#contactSection">Contact Us</a></li>
+                            </ul>
+                        </div>
+                    </nav>
+                </div>
+            </div>
+        </header>
+
+        <div class="slider_area owl-carousel">
+            <div class="single_slider" style="background:linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)), url('slider/1.png'); background-size:cover; height:450px; display:flex; align-items:center;">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="slider_content pl-3">
+                                <h1 class="text-white font-weight-bold">Smart Metal Trading</h1>
+                                <p class="text-warning h5">Check Live Rates & Connect with Traders</p>
+                                <a href="#liveMetalsSection" class="button mt-3 d-inline-block">View Prices</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <section class="product_section" id="liveMetalsSection">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12 text-center mb-5">
+                        <div class="section_title">
+                            <h2>Live Market Rates</h2>
+                            <p style="color:#888;">Real-time highest bids</p>
+                            <div style="height: 2px; width: 60px; background: #a8741a; margin: 10px auto;"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" id="liveMetalsContainer">
+                    <div class="col-12 text-center"><div class="loading-spinner"><i class="fas fa-circle-notch fa-spin"></i> Loading...</div></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="dealers_area py-5" style="background:#1f1f1f; border-top:1px solid #333;" id="dealersSection">
+            <div class="container">
+                <div class="section_title text-center mb-5">
+                    <h2>Verified Dealers</h2>
+                    <p style="color:#a8741a">Connect with trusted partners</p>
+                </div>
+                <div class="row" id="dealersContainer">
+                    <div class="col-12 text-center text-white">Loading Dealers...</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="contact_section" id="contactSection">
+            <div class="container">
+                <div class="section_title text-center mb-5">
+                    <h2>Get In Touch</h2>
+                    <p style="color:#a8741a">We are here to help you grow your business</p>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <div class="contact-card">
+                            <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
+                            <div class="contact-title">Visit Us</div>
+                            <div class="contact-info">Swastik Metal  Surat,<br>Gujarat - 394230</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="contact-card">
+                            <div class="contact-icon"><i class="fas fa-phone-alt"></i></div>
+                            <div class="contact-title">Call Us</div>
+                            <div class="contact-info"><a href="tel:9982593535">+91 9982593535</a><br><span style="font-size:12px; color:#666;">(Mon-Sat: 9AM - 8PM)</span></div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="contact-card">
+                            <div class="contact-icon"><i class="fas fa-envelope"></i></div>
+                            <div class="contact-title">Email Us</div>
+                            <div class="contact-info">swastik.office.payments@gmail.com</a></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <div class="inquiry-box">
+                            <div class="form-header text-center mb-4">
+                                <h3>Quick Inquiry</h3>
+                                <p style="color:#888; font-size:13px;">Direct message via WhatsApp</p>
+                            </div>
+                            <form onsubmit="sendToWhatsApp(event)">
+                                <div class="row">
+                                    <div class="col-md-6"><input type="text" id="contactName" class="form-control-pro" placeholder="Your Name" required></div>
+                                    <div class="col-md-6"><input type="text" id="contactMobile" class="form-control-pro" placeholder="Your Mobile" required></div>
+                                    <div class="col-12"><textarea id="contactMsg" class="form-control-pro textarea-pro" placeholder="Message..." required></textarea></div>
+                                    <div class="col-12"><button type="submit" class="btn-submit-pro"><i class="fab fa-whatsapp"></i> Send Message</button></div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="footer_black">
+            <div class="container text-center">
+                <p>&copy; 2025 <a href="#">Swastik Metal</a>. All Rights Reserved.</p>
+            </div>
+        </footer>
+    </div>
+
+    <div class="modal fade" id="productModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalMetalName" style="color:#a8741a; font-family:'Baloo 2'">Metal</h5>
+                    <button type="button" class="btn-close btn-close-white" data-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-5 mb-3">
+                            <img id="modalMetalImage" class="img-fluid rounded mb-2" style="height:200px; width:100%; object-fit:cover; border:1px solid #444;">
+                            <div class="chart-container"><canvas id="priceChart" height="150"></canvas></div>
+                        </div>
+                        <div class="col-md-7">
+                            <h6 class="text-muted border-bottom pb-2">Top Sellers</h6>
+                            <div class="table-responsive"><table class="table table-dark table-sm mb-0 align-middle"><thead><tr><th>Trader</th><th>Price</th><th>Qty</th><th>Chat</th></tr></thead><tbody id="modalTradersList"></tbody></table></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="dealerModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="overflow:hidden;">
+                <div class="modal-header border-0 p-0">
+                    <button type="button" class="btn-close btn-close-white" data-dismiss="modal" style="position:absolute; right:15px; top:15px; z-index:10;"></button>
+                </div>
+                <div class="modal-body p-0">
+                    <div class="dealer-modal-header">
+                        <img id="popDealerImg" src="" class="big-profile-img">
+                        <h3 id="popCompany" style="color:#fff; margin:0;">Company <i class="fas fa-check-circle verified-tick"></i></h3>
+                    </div>
+                    <div style="padding: 25px;">
+                        <div class="info-row"><div class="info-label">Owner</div><div class="info-value" id="popOwnerName">...</div></div>
+                        <div class="info-row"><div class="info-label">Address</div><div class="info-value" id="popAddress">...</div></div>
+                        <div class="info-row"><div class="info-label">Mobile</div><div class="info-value"><span id="popMobile">...</span> <a id="btnCall" class="ml-2 badge bg-secondary text-white">Call</a></div></div>
+                        <div class="info-row border-0"><div class="info-label">Email</div><div class="info-value" id="popEmail">...</div></div>
+                        <div class="row mt-4"><div class="col-12"><a id="btnWhatsapp" href="#" target="_blank" class="btn btn-success w-100" style="border-radius:50px;"><b><i class="fab fa-whatsapp"></i> Chat on WhatsApp</b></a></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha2/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        $(document).ready(function(){ $(".slider_area").owlCarousel({ items: 1, loop: true, autoplay: true, nav: false, dots: true }); });
+        
+        function sendToWhatsApp(e) {
+            e.preventDefault();
+            var name = document.getElementById("contactName").value;
+            var mobile = document.getElementById("contactMobile").value;
+            var msg = document.getElementById("contactMsg").value;
+            var adminPhone = "9982593535"; 
+            var text = `*New Inquiry*%0A%0A*Name:* ${name}%0A*Mobile:* ${mobile}%0A*Message:* ${msg}`;
+            window.open(`https://wa.me/91${adminPhone}?text=${text}`, '_blank');
+        }
+    </script>
+    <script type="module" src="main.js"></script>
+</body>
+</html>
