@@ -158,38 +158,41 @@ ul { list-style: none; padding: 0; margin: 0; }
 .footer_black p { color: #777; font-size: 14px; text-align: center; }
 .footer_black a { color: #a8741a; }
 
-
-
-/* --- DEALER CARD PROFESSIONAL DESIGN --- */
+/* --- FIXED DEALER CARD STYLE (Horizontal Look) --- */
 .dealer-card {
+    display: flex !important;       /* Force Horizontal Layout */
+    flex-direction: row !important; /* Side by Side */
+    align-items: center !important;
     background: #242424;
     border: 1px solid #333;
     border-radius: 10px;
     padding: 15px;
-    display: flex; /* Image Left, Text Right */
-    align-items: center;
     gap: 15px;
     cursor: pointer;
     transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
+    width: 100%;
+    text-align: left; /* Text ko left align karein */
 }
 
 .dealer-card:hover {
     transform: translateY(-5px);
     border-color: #a8741a;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-    background: #2a2a2a;
+    background: #2f2f2f;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
 }
 
-/* Left Side Image */
+/* Image Box (Left Side) */
 .dealer-img-box {
-    flex-shrink: 0; /* Image shrink na ho */
     width: 60px;
     height: 60px;
+    min-width: 60px; /* Chipke nahi */
     border-radius: 50%;
     overflow: hidden;
     border: 2px solid #a8741a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #000;
 }
 
 .dealer-img-box img {
@@ -198,41 +201,43 @@ ul { list-style: none; padding: 0; margin: 0; }
     object-fit: cover;
 }
 
-/* Right Side Content */
+/* Text Info (Right Side) */
 .dealer-info {
-    flex-grow: 1;
-    overflow: hidden; /* Text overflow handle karne ke liye */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
 }
 
 .dealer-company {
     color: #fff;
     font-size: 16px;
     font-weight: 700;
-    margin-bottom: 2px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    line-height: 1.2;
+    margin-bottom: 3px;
     display: flex;
     align-items: center;
     gap: 5px;
 }
 
 .verified-tick {
-    color: #1DA1F2; /* Twitter Blue for Verified */
+    color: #25D366; /* Green Tick looks better */
     font-size: 14px;
 }
 
 .dealer-user {
-    color: #ccc;
+    color: #bbb;
     font-size: 13px;
-    margin-bottom: 4px;
+    font-weight: 500;
 }
 
 .dealer-loc {
     color: #888;
-    font-size: 11px;
-    display: block;
+    font-size: 12px;
+    margin-top: 2px;
 }
+
+
 
 /* --- DEALER DETAIL MODAL --- */
 .dealer-modal-header {
@@ -369,3 +374,27 @@ ul { list-style: none; padding: 0; margin: 0; }
     width: 100%;
 }
 .btn-submit-pro:hover { background: #fff; color: #a8741a; }
+
+
+/* --- MODAL WIDER FIX --- */
+@media (min-width: 992px) {
+    .modal-xl {
+        max-width: 95%; /* Screen ka 95% width lega */
+    }
+}
+
+.chart-container {
+    position: relative;
+    height: 180px; /* Graph ko thoda bada kiya */
+    width: 100%;
+    background: #2a2a2a;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #444;
+}
+
+/* Table Scroll Fix */
+.table-responsive {
+    max-height: 300px; /* Table ki height graph ke barabar */
+    overflow-y: auto;
+}
