@@ -16,8 +16,7 @@ const firebaseConfig = {
 
 auth.onAuthStateChanged(user => { if (!user) window.location.href = "login.html"; });
 document.getElementById('logoutBtn').addEventListener('click', () => signOut(auth).then(() => window.location.href = "index.html"));
-
-// 1. VERIFICATION (Auto 'Trial' Plan)
+// 1. VERIFICATION 
 function loadRequests() {
     onSnapshot(collection(db, "pending_requests"), (snapshot) => {
         const body = document.getElementById('requestsTableBody');
@@ -173,6 +172,7 @@ function loadLogs(){ onSnapshot(query(collection(db,"login_logs"),orderBy("login
 async function cleanOldLogs(){const d=new Date();d.setDate(d.getDate()-7);const q=query(collection(db,"login_logs"),where("loginTime","<",d));const s=await getDocs(q);s.forEach(async(x)=>{await deleteDoc(x.ref);});}
 
 loadRequests(); loadUsers(); loadMetals(); loadLogs();
+
 
 
 
