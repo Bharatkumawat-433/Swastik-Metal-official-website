@@ -13,7 +13,6 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
     btn.disabled = true;
 
     try {
-        // 1. Firebase Auth Login
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
 
@@ -82,3 +81,4 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
         btn.disabled = false;
     }
 });
+
