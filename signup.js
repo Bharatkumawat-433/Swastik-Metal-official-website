@@ -7,55 +7,63 @@ document.getElementById('signupForm').addEventListener('submit', async function(
     // 1. Get Values
     const company = document.getElementById('companyName').value;
     const name = document.getElementById('fullName').value;
-    const email = document.getElementById('email').value.toLowerCase(); // keep email lowercase
+    const email = document.getElementById('email').value.toLowerCase().trim(); // Clean Email
     const mobile = document.getElementById('mobile').value;
     const address = document.getElementById('address').value;
     const submitBtn = document.querySelector('.btn-register');
 
-    // Button Loading State
-    submitBtn.innerHTML = 'Sending Request...';
+    submitBtn.innerHTML = 'Checking Availability...';
     submitBtn.disabled = true;
 
     try {
-        // 2. Check if email already exists in 'pending_requests' or 'users'
-        // (Ye basic check hai, advanced check hum cloud functions se bhi kar sakte hain)
-        const q = query(collection(db, "pending_requests"), where("email", "==", email));
-        const querySnapshot = await getDocs(q);
+        // === 2. DUPLICATE CHECK (Users & Pending) ===
+        
+        // Check 1: Kya ye User pehle se verified list me hai?
+        const qUsers = query(collection(db, "users"), where("email", "==", email));
+        const snapUsers = await getDocs(qUsers);
 
-        if (!querySnapshot.empty) {
-            throw new Error("This email request is already pending!");
+        // Check 2: Kya ye Request pehle se pending list me hai?
+        const qPending = query(collection(db, "pending_requests"), where("email", "==", email));
+        const snapPending = await getDocs(qPending);
+
+        if (!snapUsers.empty) {
+            throw new Error("This Email is ALREADY REGISTERED and Active. Please Login.");
         }
 
-        // 3. Save to Firestore (Not creating Auth User yet)
+        if (!snapPending.empty) {
+            throw new Error("Request for this Email is already PENDING approval.");
+        }
+
+        // === 3. Submit Request ===
+        submitBtn.innerHTML = 'Sending Request...';
+        
         await addDoc(collection(db, "pending_requests"), {
             companyName: company,
             fullName: name,
             email: email,
             mobile: mobile,
             address: address,
-            status: "pending", // Admin will change this to 'approved'
+            status: "pending",
             requestDate: serverTimestamp()
         });
 
-        // 4. Success Alert
         Swal.fire({
             title: 'Request Sent!',
-            text: 'Your registration details have been sent to the Admin. Once verified, you will receive an email to set your password.',
+            text: 'Your details have been submitted for Admin verification.',
             icon: 'success',
             confirmButtonColor: '#a8741a',
             background: '#242424',
             color: '#fff'
         }).then(() => {
-            // Optional: Redirect to home or clear form
             document.getElementById('signupForm').reset();
         });
 
     } catch (error) {
         console.error("Error:", error);
         Swal.fire({
-            title: 'Error!',
-            text: error.message,
-            icon: 'error',
+            title: 'Registration Failed',
+            text: error.message, // "Email already registered" message yahan dikhega
+            icon: 'warning',
             confirmButtonColor: '#d33',
             background: '#242424',
             color: '#fff'
