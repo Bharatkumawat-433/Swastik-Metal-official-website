@@ -3,16 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - Swastik Metal</title>
+    <title>Admin Dashboard</title>
+    <link rel="shortcut icon" href="SM_logo.png" type="image/x-icon">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
-    <link rel="shortcut icon" href="SM_logo.png" type="image/x-icon">
     <style>
         .nav-tabs .nav-link.active { background-color: #242424; color: #a8741a; border-color: #444; border-bottom-color: transparent; }
         .nav-tabs .nav-link { color: #aaa; }
         .metal-img-preview { width: 50px; height: 50px; object-fit: cover; border: 1px solid #555; }
         .modal-content { background-color: #242424; color: #fff; border: 1px solid #444; }
+        .text-expiry-valid { color: #25D366; font-weight: bold; }
+        .text-expiry-expired { color: #dc3545; font-weight: bold; }
+        /* Date Picker Dark Mode Fix */
+        input[type="date"] { background-color: #333; color: white; border: 1px solid #555; }
+        ::-webkit-calendar-picker-indicator { filter: invert(1); }
     </style>
 </head>
 <body>
@@ -26,21 +31,47 @@
     </nav>
 
     <div class="container-fluid p-4">
-        <ul class="nav nav-tabs mb-4" id="adminTabs" role="tablist">
-            <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#verify">Verification Center</a></li>
-            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#metals">Manage Metals</a></li>
-            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#logs">Login History</a></li>
+        <ul class="nav nav-tabs mb-4" id="adminTabs">
+            <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#verify">Verification</a></li>
+            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#users">Manage Users</a></li>
+            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#metals">Metals</a></li>
+            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#logs">History</a></li>
         </ul>
 
         <div class="tab-content">
             
             <div class="tab-pane fade show active" id="verify">
                 <div class="card" style="background:#242424; border:1px solid #333;">
-                    <div class="card-header text-white border-bottom-0">New Joining Requests</div>
+                    <div class="card-header text-white">New Joining Requests</div>
                     <div class="table-responsive">
-                        <table class="table table-dark table-hover mb-0">
-                            <thead><tr><th>Date</th><th>Company</th><th>Name</th><th>Email</th><th>Mobile</th><th>Actions</th></tr></thead>
+                        <table class="table table-dark table-hover mb-0 align-middle">
+                            <thead><tr style="color:#a8741a"><th>Date</th><th>Company</th><th>Name</th><th>Email</th><th>Mobile</th><th>Actions</th></tr></thead>
                             <tbody id="requestsTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="users">
+                <div class="card" style="background:#242424; border:1px solid #333;">
+                    <div class="card-header text-white d-flex justify-content-between">
+                        <span>Active Verified Traders</span>
+                        <button class="btn btn-sm btn-outline-light" onclick="loadUsers()"><i class="fas fa-sync"></i> Refresh</button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-dark table-hover mb-0 align-middle">
+                            <thead>
+                                <tr style="color: #a8741a;">
+                                    <th>Company</th>
+                                    <th>Mobile</th>
+                                    <th>Active Plan</th> <th>Expires On</th>
+                                    <th>Extend Plan</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTableBody">
+                                <tr><td colspan="6" class="text-center">Loading users...</td></tr>
+                            </tbody>
                         </table>
                     </div>
                 </div>
@@ -49,17 +80,13 @@
             <div class="tab-pane fade" id="metals">
                 <div class="row">
                     <div class="col-md-4">
-                        <div class="card" style="background:#242424; border:1px solid #333; color:white;">
-                            <div class="card-header border-bottom-0">Add New Metal</div>
+                        <div class="card mb-3" style="background:#242424; border:1px solid #333; color:white;">
+                            <div class="card-header">Add New Metal</div>
                             <div class="card-body">
                                 <form id="addMetalForm">
-                                    <div class="mb-3"><label>Metal Name</label><input type="text" id="metalName" class="form-control" required style="background:#333; color:white; border:1px solid #444;"></div>
-                                    <div class="mb-3">
-                                        <label>Image</label>
-                                        <input type="file" id="metalImageFile" class="form-control" accept="image/*" required style="background:#333; color:white; border:1px solid #444;">
-                                        <small class="text-danger">* Max 800KB</small>
-                                    </div>
-                                    <img id="previewImg" src="" style="display:none; width:100%; margin-bottom:10px; border-radius:5px;">
+                                    <div class="mb-3"><label>Name</label><input type="text" id="metalName" class="form-control" style="background:#333; color:white; border:1px solid #444;" required></div>
+                                    <div class="mb-3"><label>Image</label><input type="file" id="metalImageFile" class="form-control" accept="image/*" style="background:#333; color:white; border:1px solid #444;" required></div>
+                                    <img id="previewImg" src="" style="display:none; width:100%; margin-bottom:10px;">
                                     <button type="submit" class="btn btn-warning w-100" id="btnAddMetal">Add Metal</button>
                                 </form>
                             </div>
@@ -67,9 +94,9 @@
                     </div>
                     <div class="col-md-8">
                         <div class="card" style="background:#242424; border:1px solid #333;">
-                            <div class="card-header text-white border-bottom-0">Current Metals</div>
-                            <table class="table table-dark table-hover mb-0">
-                                <thead><tr><th>Image</th><th>Name</th><th>Action</th></tr></thead>
+                            <div class="card-header text-white">Current Metals</div>
+                            <table class="table table-dark table-hover mb-0 align-middle">
+                                <thead><tr style="color:#a8741a"><th>Image</th><th>Name</th><th>Action</th></tr></thead>
                                 <tbody id="metalsTableBody"></tbody>
                             </table>
                         </div>
@@ -79,27 +106,34 @@
 
             <div class="tab-pane fade" id="logs">
                 <div class="card" style="background:#242424; border:1px solid #333;">
-                    <div class="card-header text-white border-bottom-0 d-flex justify-content-between">
-                        <span>Recent User Activity</span>
-                        <span style="font-size:12px; color:#aaa;">(Auto-deletes logs > 7 days)</span>
+                    <div class="card-header text-white d-flex justify-content-between">
+                        <span>Recent Activity</span>
+                        <span style="font-size:12px; color:#aaa;">Auto-deletes logs > 7 days</span>
                     </div>
                     <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
-                        <table class="table table-dark table-sm mb-0">
-                            <thead>
-                                <tr>
-                                    <th>Date</th>
-                                    <th>Time</th>
-                                    <th>Company</th>
-                                    <th>User Name</th>
-                                    <th>Phone</th>
-                                </tr>
-                            </thead>
+                        <table class="table table-dark table-sm mb-0 align-middle">
+                            <thead><tr style="color:#a8741a"><th>Date</th><th>Time</th><th>Company</th><th>Owner</th><th>Phone</th></tr></thead>
                             <tbody id="logsTableBody"></tbody>
                         </table>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
 
+    <div class="modal fade" id="dateModal" tabindex="-1">
+        <div class="modal-dialog modal-sm modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0"><h5 class="modal-title">Manual Date Edit</h5><button type="button" class="close text-white" data-dismiss="modal">&times;</button></div>
+                <div class="modal-body">
+                    <input type="hidden" id="dateUserId">
+                    <div class="mb-3">
+                        <label>Select New Expiry Date</label>
+                        <input type="date" id="newExpiryDate" class="form-control">
+                    </div>
+                    <button class="btn btn-success w-100" onclick="saveCustomDate()">Update Date</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -128,3 +162,6 @@
     <script type="module" src="admin-dashboard.js"></script>
 </body>
 </html>
+
+
+
