@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
-    <link rel="shortcut icon" href="SM_logo.png" type="image/x-icon">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
@@ -23,16 +22,12 @@
 
     <nav class="navbar d-flex justify-content-between" style="background:#242424; border-bottom:1px solid #333; padding:15px;">
         <span class="navbar-brand" style="color:#a8741a; font-family:'Baloo 2'; font-size:24px;">Swastik Admin</span>
-        <div>
-            <span class="mr-3 text-white">Welcome, Admin</span>
-            <span id="logoutBtn" style="color:#fff; cursor:pointer;"><i class="fas fa-sign-out-alt"></i> Logout</span>
-        </div>
+        <div><span class="mr-3 text-white">Welcome, Admin</span><span id="logoutBtn" style="color:#fff; cursor:pointer;"><i class="fas fa-sign-out-alt"></i> Logout</span></div>
     </nav>
 
     <div class="container-fluid p-4">
         <ul class="nav nav-tabs mb-4" id="adminTabs">
-            <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#verify">Verification</a></li>
-            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#users">Manage Users</a></li>
+            <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#verify">Verification & Users</a></li>
             <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#metals">Metals</a></li>
             <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#logs">History</a></li>
         </ul>
@@ -40,8 +35,11 @@
         <div class="tab-content">
             
             <div class="tab-pane fade show active" id="verify">
-                <div class="card" style="background:#242424; border:1px solid #333;">
-                    <div class="card-header text-white">New Joining Requests</div>
+                
+                <div class="card mb-5" style="background:#242424; border:1px solid #333;">
+                    <div class="card-header text-white border-bottom-0">
+                        <i class="fas fa-user-clock text-warning"></i> New Joining Requests
+                    </div>
                     <div class="table-responsive">
                         <table class="table table-dark table-hover mb-0 align-middle">
                             <thead><tr style="color:#a8741a"><th>Date</th><th>Company</th><th>Name</th><th>Email</th><th>Mobile</th><th>Actions</th></tr></thead>
@@ -49,31 +47,31 @@
                         </table>
                     </div>
                 </div>
-            </div>
 
-            <div class="tab-pane fade" id="users">
                 <div class="card" style="background:#242424; border:1px solid #333;">
-                    <div class="card-header text-white d-flex justify-content-between">
-                        <span>Active Verified Traders</span>
-                        <button class="btn btn-sm btn-outline-light" onclick="loadUsers()"><i class="fas fa-sync"></i> Refresh</button>
+                    <div class="card-header text-white border-bottom-0 d-flex justify-content-between">
+                        <span><i class="fas fa-users text-success"></i> Verified Traders (Manage & Edit)</span>
+                        <button class="btn btn-sm btn-outline-light" onclick="loadVerifiedUsers()"><i class="fas fa-sync"></i> Refresh</button>
                     </div>
                     <div class="table-responsive">
                         <table class="table table-dark table-hover mb-0 align-middle">
                             <thead>
-                                <tr style="color: #a8741a;">
+                                <tr style="color:#a8741a">
                                     <th>Company</th>
+                                    <th>Owner</th>
                                     <th>Mobile</th>
-                                    <th>Active Plan</th> <th>Expires On</th>
-                                    <th>Extend Plan</th>
+                                    <th>Plan Expires</th>
+                                    <th>Extend</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
-                            <tbody id="usersTableBody">
+                            <tbody id="verifiedUsersTable">
                                 <tr><td colspan="6" class="text-center">Loading users...</td></tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
+
             </div>
 
             <div class="tab-pane fade" id="metals">
@@ -106,8 +104,7 @@
             <div class="tab-pane fade" id="logs">
                 <div class="card" style="background:#242424; border:1px solid #333;">
                     <div class="card-header text-white d-flex justify-content-between">
-                        <span>Recent Activity</span>
-                        <span style="font-size:12px; color:#aaa;">Auto-deletes logs > 7 days</span>
+                        <span>Recent Activity</span><span style="font-size:12px; color:#aaa;">Auto-deletes > 7 days</span>
                     </div>
                     <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
                         <table class="table table-dark table-sm mb-0 align-middle">
@@ -120,16 +117,33 @@
         </div>
     </div>
 
+    <div class="modal fade" id="editUserModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0"><h5 class="modal-title">Edit Trader Details</h5><button type="button" class="close text-white" data-dismiss="modal">&times;</button></div>
+                <div class="modal-body">
+                    <form id="editUserForm">
+                        <input type="hidden" id="editUserId">
+                        <input type="hidden" id="editUserEmail"> <div class="mb-3"><label>Company Name</label><input type="text" id="editUserCompany" class="form-control form-control-dark" required></div>
+                        <div class="mb-3"><label>Owner Name</label><input type="text" id="editUserName" class="form-control form-control-dark" required></div>
+                        <div class="mb-3"><label>Mobile</label><input type="text" id="editUserMobile" class="form-control form-control-dark" required></div>
+                        <div class="mb-3"><label>Address</label><textarea id="editUserAddress" class="form-control form-control-dark" rows="2"></textarea></div>
+                        
+                        <div class="alert alert-warning p-2" style="font-size:12px;">Note: Updates will also change past price records.</div>
+                        <button type="submit" class="btn btn-primary w-100">Save & Update Prices</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal fade" id="dateModal" tabindex="-1">
         <div class="modal-dialog modal-sm modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header border-0"><h5 class="modal-title">Manual Date Edit</h5><button type="button" class="close text-white" data-dismiss="modal">&times;</button></div>
+                <div class="modal-header border-0"><h5 class="modal-title">Manual Date</h5><button type="button" class="close text-white" data-dismiss="modal">&times;</button></div>
                 <div class="modal-body">
                     <input type="hidden" id="dateUserId">
-                    <div class="mb-3">
-                        <label>Select New Expiry Date</label>
-                        <input type="date" id="newExpiryDate" class="form-control">
-                    </div>
+                    <input type="date" id="newExpiryDate" class="form-control mb-3">
                     <button class="btn btn-success w-100" onclick="saveCustomDate()">Update Date</button>
                 </div>
             </div>
@@ -143,8 +157,8 @@
                 <div class="modal-body">
                     <form id="editMetalForm">
                         <input type="hidden" id="editMetalId">
-                        <div class="mb-3"><label>Name</label><input type="text" id="editMetalName" class="form-control form-control-dark" required style="background:#333; color:white; border:1px solid #444;"></div>
-                        <div class="mb-3"><label>Change Image (Optional)</label><input type="file" id="editMetalFile" class="form-control form-control-dark" accept="image/*" style="background:#333; color:white; border:1px solid #444;"></div>
+                        <div class="mb-3"><label>Name</label><input type="text" id="editMetalName" class="form-control form-control-dark" required></div>
+                        <div class="mb-3"><label>Change Image (Optional)</label><input type="file" id="editMetalFile" class="form-control form-control-dark" accept="image/*"></div>
                         <div class="text-center mb-3"><img id="editMetalPreview" src="" style="height:100px; object-fit:cover; border:1px solid #555;"></div>
                         <button type="submit" class="btn btn-warning w-100">Save Changes</button>
                     </form>
@@ -161,7 +175,3 @@
     <script type="module" src="admin-dashboard.js"></script>
 </body>
 </html>
-
-
-
-
