@@ -16,7 +16,8 @@ const firebaseConfig = {
 
 auth.onAuthStateChanged(user => { if (!user) window.location.href = "login.html"; });
 document.getElementById('logoutBtn').addEventListener('click', () => signOut(auth).then(() => window.location.href = "index.html"));
-// 1. VERIFICATION 
+
+// 1. PENDING REQUESTS
 function loadRequests() {
     onSnapshot(collection(db, "pending_requests"), (snapshot) => {
         const body = document.getElementById('requestsTableBody');
@@ -24,8 +25,11 @@ function loadRequests() {
         snapshot.forEach(doc => {
             const d = doc.data();
             const date = d.requestDate ? new Date(d.requestDate.seconds*1000).toLocaleDateString('en-GB') : 'N/A';
-            body.innerHTML += `<tr><td>${date}</td><td>${d.companyName}</td><td>${d.fullName}</td><td>${d.email}</td><td>${d.mobile}</td>
-            <td><button class="btn btn-sm btn-success mr-2" onclick="approveUser('${doc.id}')">Approve</button><button class="btn btn-sm btn-danger" onclick="rejectUser('${doc.id}')">Reject</button></td></tr>`;
+            body.innerHTML += `
+                <tr>
+                    <td>${date}</td><td>${d.companyName}</td><td>${d.fullName}</td><td>${d.email}</td><td>${d.mobile}</td>
+                    <td><button class="btn btn-sm btn-success mr-2" onclick="approveUser('${doc.id}')">Approve</button><button class="btn btn-sm btn-danger" onclick="rejectUser('${doc.id}')">Reject</button></td>
+                </tr>`;
         });
     });
 }
@@ -45,113 +49,152 @@ window.approveUser = async (docId) => {
         try {
             const cred = await createUserWithEmailAndPassword(secAuth, userData.email, tempPass);
             finalUid = cred.user.uid;
-           await emailjs.send("service_cjc1agm", "template_tt0jxw6", { to_name: userData.fullName, to_email: userData.email, temp_password: tempPass });
+            await emailjs.send("service_cjc1agm", "template_tt0jxw6", { to_name: userData.fullName, to_email: userData.email, temp_password: tempPass });
         } catch (e) {
             if (e.code === 'auth/email-already-in-use') { isOld=true; finalUid="EXISTING"; await sendPasswordResetEmail(secAuth, userData.email); } else throw e;
         }
         await secSignOut(secAuth);
 
         const expiry = new Date(); expiry.setDate(expiry.getDate() + 30);
-
         await setDoc(doc(db, "users", userData.email), {
             uid: finalUid, companyName: userData.companyName, fullName: userData.fullName,
             email: userData.email, mobile: userData.mobile, address: userData.address, 
             role: 'trader', isVerified: true, createdAt: serverTimestamp(),
-            expiryDate: Timestamp.fromDate(expiry),
-            activePlanName: 'Trial' // 👈 SAVING PLAN NAME
+            expiryDate: Timestamp.fromDate(expiry), activePlanName: 'Trial'
         });
 
         await deleteDoc(pendingRef);
-        Swal.fire("Success", isOld ? "User Re-activated." : "User Created.", "success");
+        Swal.fire("Success", isOld ? "Re-activated & Reset Link Sent." : "Created & Email Sent.", "success");
     } catch (e) { console.error(e); Swal.fire("Error", e.message, "error"); }
 };
 window.rejectUser = async (id) => { if(confirm("Reject?")) await deleteDoc(doc(db, "pending_requests", id)); };
 
 
-// ===================================
-// 2. MANAGE USERS (Update for Plan Name & Calendar)
-// ===================================
-window.loadUsers = function() {
+// 2. VERIFIED USERS
+window.loadVerifiedUsers = function() {
     const q = query(collection(db, "users"), where("role", "==", "trader"));
     onSnapshot(q, (snapshot) => {
-        const body = document.getElementById('usersTableBody');
-        body.innerHTML = snapshot.empty ? '<tr><td colspan="6" class="text-center">No active users.</td></tr>' : '';
+        const body = document.getElementById('verifiedUsersTable');
+        body.innerHTML = snapshot.empty ? '<tr><td colspan="6" class="text-center">No verified traders.</td></tr>' : '';
         
         snapshot.forEach(docSnap => {
             const u = docSnap.data();
             let expiryObj = u.expiryDate ? u.expiryDate.toDate() : new Date();
             const isExpired = new Date() > expiryObj;
             const expiryStr = expiryObj.toLocaleDateString('en-GB');
-            const statusBadge = isExpired ? '<span class="badge bg-danger">Expired</span>' : '<span class="badge bg-success">Active</span>';
             const dateClass = isExpired ? 'text-expiry-expired' : 'text-expiry-valid';
             const planName = u.activePlanName || 'Trial';
 
             body.innerHTML += `
                 <tr>
                     <td><strong style="color:white">${u.companyName}</strong><br><small style="color:#aaa">${u.email}</small></td>
+                    <td>${u.fullName}</td>
                     <td>${u.mobile}</td>
-                    <td><span class="badge bg-info text-dark">${planName}</span> ${statusBadge}</td>
-                    <td class="${dateClass}">${expiryStr}</td>
+                    <td class="${dateClass}">${expiryStr} <span class="badge bg-secondary" style="font-size:10px">${planName}</span></td>
                     <td>
                         <div class="btn-group btn-group-sm">
-                            <button class="btn btn-outline-info" title="3 Months" onclick="extendUser('${docSnap.id}', 3, 'Quarterly')">3M</button>
-                            <button class="btn btn-outline-warning" title="6 Months" onclick="extendUser('${docSnap.id}', 6, 'Half-Yearly')">6M</button>
-                            <button class="btn btn-outline-success" title="1 Year" onclick="extendUser('${docSnap.id}', 12, 'Yearly')">1Y</button>
-                            <button class="btn btn-outline-light" title="Manual Edit" onclick="openDateModal('${docSnap.id}')"><i class="fas fa-pencil-alt"></i></button>
+                            <button class="btn btn-outline-info" onclick="extendUser('${docSnap.id}', 3, 'Quarterly')">3M</button>
+                            <button class="btn btn-outline-warning" onclick="extendUser('${docSnap.id}', 6, 'Half-Yearly')">6M</button>
+                            <button class="btn btn-outline-success" onclick="extendUser('${docSnap.id}', 12, 'Yearly')">1Y</button>
+                            <button class="btn btn-outline-light" onclick="openDateModal('${docSnap.id}')"><i class="fas fa-calendar-alt"></i></button>
                         </div>
                     </td>
-                    <td><button class="btn btn-sm btn-danger" onclick="deleteUser('${docSnap.id}', '${u.email}')"><i class="fas fa-trash"></i></button></td>
+                    <td>
+                        <button class="btn btn-sm btn-primary" onclick="openEditUserModal('${docSnap.id}')"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteUser('${docSnap.id}', '${u.email}')"><i class="fas fa-trash"></i></button>
+                    </td>
                 </tr>`;
         });
     });
 }
 
-// EXTEND LOGIC (SAVES PLAN NAME)
+// === NEW: EDIT USER & UPDATE ALL PRICES ===
+window.openEditUserModal = async (userId) => {
+    const docSnap = await getDoc(doc(db, "users", userId));
+    if(docSnap.exists()){
+        const d = docSnap.data();
+        document.getElementById('editUserId').value = userId;
+        document.getElementById('editUserEmail').value = d.email; // Capture Email
+        document.getElementById('editUserCompany').value = d.companyName;
+        document.getElementById('editUserName').value = d.fullName;
+        document.getElementById('editUserMobile').value = d.mobile;
+        document.getElementById('editUserAddress').value = d.address || "";
+        $('#editUserModal').modal('show');
+    }
+};
+
+document.getElementById('editUserForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const id = document.getElementById('editUserId').value;
+    const email = document.getElementById('editUserEmail').value;
+    const company = document.getElementById('editUserCompany').value;
+    const name = document.getElementById('editUserName').value;
+    const mobile = document.getElementById('editUserMobile').value;
+    const address = document.getElementById('editUserAddress').value;
+
+    const btn = e.target.querySelector('button');
+    const oldText = btn.innerText;
+    btn.innerText = "Updating all records...";
+    btn.disabled = true;
+
+    try {
+        // 1. Update User Profile
+        await updateDoc(doc(db, "users", id), {
+            companyName: company,
+            fullName: name,
+            mobile: mobile,
+            address: address
+        });
+
+        // 2. Update All Past Prices (Batch Logic)
+        const q = query(collection(db, "prices"), where("userEmail", "==", email));
+        const querySnapshot = await getDocs(q);
+        
+        // Loop and update each price doc
+        const updatePromises = querySnapshot.docs.map(priceDoc => {
+            return updateDoc(doc(db, "prices", priceDoc.id), {
+                userName: company, // Update Company Name in price
+                userMobile: mobile // Update Mobile in price
+            });
+        });
+
+        await Promise.all(updatePromises); // Wait for all updates
+
+        $('#editUserModal').modal('hide');
+        Swal.fire("Success", "User details & all associated prices updated!", "success");
+    } catch(err) {
+        console.error(err);
+        Swal.fire("Error", "Update failed: " + err.message, "error");
+    } finally {
+        btn.innerText = oldText;
+        btn.disabled = false;
+    }
+});
+
+// Extend & Delete
 window.extendUser = async (userId, months, planName) => {
     try {
         const userRef = doc(db, "users", userId);
         const userSnap = await getDoc(userRef);
-        if (!userSnap.exists()) return Swal.fire("Error", "User not found", "error");
-
-        const userData = userSnap.data();
-        let currentExpiry = userData.expiryDate ? userData.expiryDate.toDate() : new Date();
+        let currentExpiry = userSnap.data().expiryDate ? userSnap.data().expiryDate.toDate() : new Date();
         if (currentExpiry < new Date()) currentExpiry = new Date();
-
         currentExpiry.setMonth(currentExpiry.getMonth() + months);
-        
-        await updateDoc(userRef, { 
-            expiryDate: Timestamp.fromDate(currentExpiry),
-            activePlanName: planName // 👈 Saving Plan
-        });
-        
+        await updateDoc(userRef, { expiryDate: Timestamp.fromDate(currentExpiry), activePlanName: planName });
         Swal.fire({toast:true, position:'top-end', icon:'success', title:`Extended (${planName})`, timer:2000, showConfirmButton:false});
     } catch(e) { Swal.fire("Error", e.message, "error"); }
 };
 
-// MANUAL DATE LOGIC
-window.openDateModal = (userId) => {
-    document.getElementById('dateUserId').value = userId;
-    $('#dateModal').modal('show');
-};
-
+window.openDateModal = (id) => { document.getElementById('dateUserId').value = id; $('#dateModal').modal('show'); };
 window.saveCustomDate = async () => {
-    const userId = document.getElementById('dateUserId').value;
+    const id = document.getElementById('dateUserId').value;
     const dateVal = document.getElementById('newExpiryDate').value;
-    if(!dateVal) return Swal.fire("Error", "Select a date", "error");
-
-    try {
-        const newDate = new Date(dateVal);
-        await updateDoc(doc(db, "users", userId), { 
-            expiryDate: Timestamp.fromDate(newDate),
-            activePlanName: 'Custom' // 👈 Custom Label
-        });
-        $('#dateModal').modal('hide');
-        Swal.fire("Success", "Date Updated Manually", "success");
-    } catch(e) { Swal.fire("Error", e.message, "error"); }
+    if(!dateVal) return;
+    await updateDoc(doc(db, "users", id), { expiryDate: Timestamp.fromDate(new Date(dateVal)), activePlanName: 'Custom' });
+    $('#dateModal').modal('hide'); Swal.fire("Success", "Date Updated", "success");
 };
 
 window.deleteUser = async (userId, userEmail) => {
-    if(!(await Swal.fire({ title: 'Delete?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33', confirmButtonText: 'Delete' })).isConfirmed) return;
+    if(!(await Swal.fire({ title: 'Delete?', text: "Removes user and data.", icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33', confirmButtonText: 'Delete' })).isConfirmed) return;
     try {
         Swal.showLoading();
         const pricesQ = query(collection(db, "prices"), where("userEmail", "==", userEmail));
@@ -161,7 +204,7 @@ window.deleteUser = async (userId, userEmail) => {
     } catch (e) { Swal.fire("Error", e.message, "error"); }
 };
 
-// ... (Metals & Logs Same as before) ...
+// ... (Metals & Logs same) ...
 document.getElementById('metalImageFile').addEventListener('change', function(e) { const r = new FileReader(); r.onload=(ev)=>{document.getElementById('previewImg').src=ev.target.result;document.getElementById('previewImg').style.display='block';}; if(e.target.files[0])r.readAsDataURL(e.target.files[0]); });
 document.getElementById('addMetalForm').addEventListener('submit', async (e) => { e.preventDefault(); const f=document.getElementById('metalImageFile').files[0]; if(f.size>800*1024)return Swal.fire("Error","Image > 800KB","error"); const b=document.getElementById('btnAddMetal'); b.innerHTML='Uploading...'; b.disabled=true; const r=new FileReader(); r.readAsDataURL(f); r.onload=async()=>{ await addDoc(collection(db,"metals"),{name:document.getElementById('metalName').value,image:r.result,createdAt:serverTimestamp()}); document.getElementById('addMetalForm').reset(); document.getElementById('previewImg').style.display='none'; Swal.fire("Success","Metal Added","success"); b.innerHTML='Add Metal'; b.disabled=false; }; });
 function loadMetals() { onSnapshot(collection(db,"metals"),(s)=>{ const b=document.getElementById('metalsTableBody'); b.innerHTML=''; s.forEach(d=>{ const v=d.data(); b.innerHTML+=`<tr><td><img src="${v.image}" class="metal-img-preview"></td><td>${v.name}</td><td><button class="btn btn-sm btn-info mr-1" onclick="openEditModal('${d.id}','${v.name}','${v.image}')"><i class="fas fa-edit"></i></button><button class="btn btn-sm btn-danger" onclick="deleteMetal('${d.id}')"><i class="fas fa-trash"></i></button></td></tr>`; }); }); }
@@ -171,8 +214,6 @@ document.getElementById('editMetalForm').addEventListener('submit',async(e)=>{e.
 function loadLogs(){ onSnapshot(query(collection(db,"login_logs"),orderBy("loginTime","desc"),limit(50)),(s)=>{ const b=document.getElementById('logsTableBody');b.innerHTML='';s.forEach(d=>{const v=d.data();let dt="N/A",tm="N/A";if(v.loginTime){const o=new Date(v.loginTime.seconds*1000);dt=o.toLocaleDateString('en-GB');tm=o.toLocaleTimeString();}b.innerHTML+=`<tr><td style="color:#aaa;">${dt}</td><td style="color:#a8741a; font-family:monospace;">${tm}</td><td><strong>${v.companyName||"N/A"}</strong></td><td>${v.userName||v.name||"N/A"}</td><td>${v.userMobile||"N/A"}</td></tr>`;});}); cleanOldLogs(); }
 async function cleanOldLogs(){const d=new Date();d.setDate(d.getDate()-7);const q=query(collection(db,"login_logs"),where("loginTime","<",d));const s=await getDocs(q);s.forEach(async(x)=>{await deleteDoc(x.ref);});}
 
-loadRequests(); loadUsers(); loadMetals(); loadLogs();
-
-
+loadRequests(); loadVerifiedUsers(); loadMetals(); loadLogs();
 
 
