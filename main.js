@@ -75,7 +75,7 @@ window.openDetailModal = (mId) => {
 
     traders.forEach(t => {
         const ver = t.isVerified ? '<i class="fas fa-check-circle text-primary ml-1"></i>' : '';
-        const link = `https://wa.me/${t.userMobile}?text=Interested in ${metal.name} at ₹${t.price}`;
+        const link = `https://wa.me/91${t.userMobile}?text=Interested in ${metal.name} at ₹${t.price}`;
         body.innerHTML += `<tr>
             <td><b class="text-white">${t.userName}</b>${ver}<br><small class="text-muted">${t.userEmail}</small></td>
             <td class="text-warning font-weight-bold">₹${t.price}</td>
@@ -164,10 +164,11 @@ window.openDealerModal = (userId) => {
     document.getElementById('popMobile').innerText = user.mobile;
     document.getElementById('popEmail').innerText = user.email;
 
-    document.getElementById('btnCall').href = `tel:${user.mobile}`;
-    document.getElementById('btnWhatsapp').href = `https://wa.me/${user.mobile}?text=Hello`;
+    document.getElementById('btnCall').href = `tel:+91${user.mobile}`;
+    document.getElementById('btnWhatsapp').href = `https://wa.me/91${user.mobile}?text=Hello`;
 
     new bootstrap.Modal(document.getElementById('dealerModal')).show();
 };
 
 init();
+
