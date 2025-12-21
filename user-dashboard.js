@@ -18,7 +18,6 @@ auth.onAuthStateChanged(async (user) => {
             userData = docSnap.data();
             userFavs = userData.favorites || [];
             
-            // Set UI Data
             document.getElementById('profileName').innerText = userData.companyName || "Trader";
             document.getElementById('navUserName').innerText = `Hi, ${userData.companyName}`;
             document.getElementById('profileEmail').innerText = userData.email;
@@ -286,4 +285,5 @@ window.openDetailModal = (mId) => { const metal = allMetalsData.find(m => m.id =
 function renderChart(traders) { const ctx = document.getElementById('priceChart').getContext('2d'); if(myChart) myChart.destroy(); let price = traders.length > 0 ? traders[0].price : 100; const data = [price-10, price-5, price+2, price-8, price+5, price-2, price]; myChart = new Chart(ctx, { type: 'line', data: { labels: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'], datasets: [{ label: 'Trend', data: data, borderColor: '#a8741a', backgroundColor: 'rgba(168,116,26,0.1)', fill: true, tension: 0.4 }] }, options: { plugins:{legend:{display:false}}, scales:{y:{grid:{color:'#333'}}, x:{display:false}} } }); }
 document.getElementById('profileUpload').addEventListener('change', (e) => { const file = e.target.files[0]; if(file && file.size < 500*1024) { const reader = new FileReader(); reader.readAsDataURL(file); reader.onload = async () => { await updateDoc(doc(db, "users", userData.email), { profileImage: reader.result }); document.getElementById('userProfileImg').src = reader.result; Swal.fire("Success", "Updated", "success"); }; } else Swal.fire("Error", "Image > 500KB", "warning"); });
 document.getElementById('changePassForm').addEventListener('submit', async (e) => { e.preventDefault(); const newPass = document.getElementById('newPass').value; try { await updatePassword(auth.currentUser, newPass); Swal.fire("Success", "Password Changed!", "success").then(() => { $('#passwordModal').modal('hide'); document.getElementById('changePassForm').reset(); }); } catch (error) { Swal.fire("Error", error.message, "error"); } });
+
 
