@@ -16,8 +16,7 @@ document.getElementById('signupForm').addEventListener('submit', async function(
     submitBtn.disabled = true;
 
     try {
-        // === 2. DUPLICATE CHECK (Users & Pending) ===
-        
+        // === 2. DUPLICATE CHECK (Users & Pending) 
         // Check 1: Kya ye User pehle se verified list me hai?
         const qUsers = query(collection(db, "users"), where("email", "==", email));
         const snapUsers = await getDocs(qUsers);
@@ -73,3 +72,4 @@ document.getElementById('signupForm').addEventListener('submit', async function(
         submitBtn.disabled = false;
     }
 });
+
