@@ -12,14 +12,24 @@
         /* DASHBOARD SPECIFIC STYLES */
         body { background-color: #1a1a1a; color: #e0e0e0; font-family: 'Poppins', sans-serif; }
         
+        /* Navbar */
         .navbar { background-color: #242424; border-bottom: 1px solid #333; padding: 15px; }
         .navbar-brand { color: #a8741a !important; font-weight: bold; font-family: 'Baloo 2', serif; font-size: 24px; }
+        
+        /* Profile Card */
         .profile-card { background: #242424; border: 1px solid #333; border-radius: 10px; padding: 20px; margin-bottom: 30px; }
         
+        /* Nav Pills (Tabs) */
         .nav-pills { background: #242424; padding: 5px; border-radius: 8px; border: 1px solid #333; display: inline-flex; flex-wrap: wrap; justify-content: center; gap: 5px; }
-        .nav-pills .nav-link { color: #aaa; border-radius: 6px; padding: 10px 20px; font-weight: 500; transition: 0.3s; }
+        .nav-pills .nav-link { color: #aaa; border-radius: 6px; padding: 10px 20px; font-weight: 500; transition: 0.3s; position: relative; }
         .nav-pills .nav-link.active { background-color: #a8741a; color: #fff; box-shadow: 0 4px 10px rgba(168, 116, 26, 0.4); }
         .nav-pills .nav-link:hover { color: #fff; background-color: #333; }
+
+        /* Notification Badge */
+        .notif-badge {
+            position: absolute; top: -5px; right: -5px; background: #dc3545; color: white;
+            border-radius: 50%; padding: 2px 6px; font-size: 10px; display: none; border: 1px solid #fff;
+        }
 
         /* Metal Cards */
         .metal-card { background:#242424; border:1px solid #333; border-radius:10px; margin-bottom:20px; position:relative; transition:0.3s; overflow: hidden; }
@@ -80,6 +90,15 @@
             flex-wrap: wrap;
         }
 
+        /* Notification Card Style */
+        .notif-card {
+            background: #2a2a2a; border-left: 4px solid #dc3545; padding: 15px; margin-bottom: 10px; border-radius: 5px;
+            display: flex; justify-content: space-between; align-items: center; transition: 0.3s;
+        }
+        .notif-card:hover { background: #333; }
+        .notif-text { font-size: 14px; color: #ddd; }
+        .notif-time { font-size: 11px; color: #888; display: block; margin-top: 5px; }
+
         /* Modal & WhatsApp */
         .modal-content { background-color: #242424; color: #fff; border: 1px solid #444; }
         .modal-header { border-bottom: 1px solid #333; }
@@ -139,6 +158,12 @@
                     <a class="nav-link" id="tab-live" href="#" onclick="switchTab('live')"><i class="fas fa-chart-line"></i> Live Market</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" id="tab-notif" href="#" onclick="switchTab('notif')">
+                        <i class="fas fa-bell"></i> Alerts 
+                        <span id="notifBadge" class="notif-badge">0</span>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" id="tab-plan" href="#" onclick="switchTab('plan')"><i class="fas fa-crown"></i> Subscription</a>
                 </li>
             </ul>
@@ -147,6 +172,20 @@
         <div id="metalsSection">
             <div class="row" id="metalsContainer">
                 <div class="col-12 text-center text-white">Loading Market Data...</div>
+            </div>
+        </div>
+
+        <div id="notifSection" style="display: none;">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="text-white">Price Alerts (Outbid)</h5>
+                        <button class="btn btn-sm btn-outline-danger" onclick="clearAllNotifs()">Clear All</button>
+                    </div>
+                    <div id="notifContainer">
+                        <div class="text-center text-muted py-4">No new alerts.</div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -166,7 +205,7 @@
             <div class="row">
                 <div class="col-md-3 col-sm-6 mb-4">
                     <div class="plan-card" id="card-Trial">
-                        <div class="plan-header"><h3>Trial </h3></div>
+                        <div class="plan-header"><h3>Trial</h3></div>
                         <div class="plan-price">Free <small>/ 1 Month</small></div>
                         <div class="plan-features">
                             <ul>
@@ -244,7 +283,8 @@
     </div>
 
     <div class="modal fade" id="productModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered modal-lg"> <div class="modal-content">
+        <div class="modal-dialog modal-dialog-centered modal-lg"> 
+            <div class="modal-content">
                 <div class="modal-header border-0">
                     <h5 class="modal-title" id="modalMetalName" style="color:#a8741a; font-family:'Baloo 2'">Metal</h5>
                     <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
@@ -252,7 +292,7 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-5 mb-3">
-                            <div style="background:#000; border:1px solid #444; border-radius:5px; height:180px; overflow:hidden; margin-bottom:10px;">
+                            <div style="background:#000; border-radius:5px; border:1px solid #444; padding:2px; height:180px; overflow:hidden; margin-bottom:10px;">
                                 <img id="modalMetalImage" class="img-fluid" style="height:100%; width:100%; object-fit:cover;">
                             </div>
                             <div style="background:#2a2a2a; padding:5px; border-radius:5px; border:1px solid #444; height:160px;">
@@ -281,8 +321,3 @@
     <script type="module" src="user-dashboard.js"></script>
 </body>
 </html>
-
-
-
-
-
